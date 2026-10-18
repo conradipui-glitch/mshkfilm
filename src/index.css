@@ -1,0 +1,267 @@
+@import "tailwindcss";
+@import "./fonts.css";
+
+@theme {
+  --color-coal: #16130f;
+  --color-coal-2: #201b14;
+  --color-coal-3: #2a241b;
+  --color-paper: #f2ebdd;
+  --color-cream: #e7dcc4;
+  --color-signal: #ff4d00;
+  --color-amber-tc: #ffb000;
+  --color-smoke: #a3988a;
+  --color-smoke-dark: #9c9284;
+  --color-signal-ink: #b83400;
+  --color-ink: #211c14;
+
+  --font-display: "Oswald", "Arial Narrow", sans-serif;
+  --font-sans: "Onest", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+section[id] {
+  scroll-margin-top: 3.5rem;
+}
+
+body {
+  background: var(--color-coal);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-signal);
+  color: #fff;
+}
+
+/* ---------- film grain overlay ---------- */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- film perforation (horizontal strip) ---------- */
+.perforation-x {
+  background-image: radial-gradient(
+    circle at center,
+    transparent 3.2px,
+    rgba(242, 235, 221, 0.16) 3.4px,
+    rgba(242, 235, 221, 0.16) 4.6px,
+    transparent 4.8px
+  );
+  background-size: 26px 100%;
+  background-repeat: repeat-x;
+  background-position: center;
+}
+.perforation-x-dark {
+  background-image: radial-gradient(
+    circle at center,
+    transparent 3.2px,
+    rgba(22, 19, 15, 0.35) 3.4px,
+    rgba(22, 19, 15, 0.35) 4.6px,
+    transparent 4.8px
+  );
+  background-size: 26px 100%;
+  background-repeat: repeat-x;
+  background-position: center;
+}
+
+/* ---------- vertical perforation column ---------- */
+.perforation-y {
+  background-image: radial-gradient(
+    circle at center,
+    var(--color-paper) 3px,
+    transparent 3.6px
+  );
+  background-size: 100% 24px;
+  background-repeat: repeat-y;
+  background-position: center;
+  opacity: 0.55;
+}
+
+/* ---------- clapperboard stripes ---------- */
+.clap-stripes {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-paper) 0 26px,
+    #14110d 26px 52px
+  );
+}
+
+/* ---------- marquee ---------- */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* ---------- REC blink ---------- */
+@keyframes rec-blink {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  56%,
+  100% {
+    opacity: 0.15;
+  }
+}
+.animate-rec {
+  animation: rec-blink 1.4s steps(1) infinite;
+}
+
+/* ---------- slow zoom for hero video ---------- */
+@keyframes slow-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+.animate-slow-zoom {
+  animation: slow-zoom 24s ease-out forwards;
+}
+
+/* ---------- scroll reveal ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- work row entrance (on filter change) ---------- */
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-row-in {
+  animation: row-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ---------- monitor poster swap ---------- */
+@keyframes poster-in {
+  0% {
+    opacity: 0;
+    transform: scale(1.035);
+    filter: brightness(1.6);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+.animate-poster-in {
+  animation: poster-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ---------- clapperboard clap ---------- */
+@keyframes clap-down {
+  0% {
+    transform: rotate(-24deg);
+  }
+  35% {
+    transform: rotate(0deg);
+  }
+  55% {
+    transform: rotate(-9deg);
+  }
+  75% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-24deg);
+  }
+}
+.clap-arm {
+  transform-origin: 4% 92%;
+  transform: rotate(-24deg);
+}
+.clap-arm.clapping {
+  animation: clap-down 0.9s cubic-bezier(0.34, 1.4, 0.4, 1) both;
+}
+
+@keyframes motor-flash {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  20%,
+  80% {
+    opacity: 1;
+  }
+}
+.animate-motor {
+  animation: motor-flash 0.9s ease both;
+}
+
+/* ---------- focus ring ---------- */
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 3px;
+}
+
+/* ---------- thin scrollbar for chip rails ---------- */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee,
+  .animate-slow-zoom,
+  .animate-rec,
+  .animate-row-in,
+  .animate-poster-in,
+  .animate-motor,
+  .clap-arm.clapping {
+    animation: none !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
