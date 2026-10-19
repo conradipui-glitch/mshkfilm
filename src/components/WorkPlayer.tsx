@@ -30,6 +30,9 @@ export function WorkPlayer({ work, index, total, onClose, onPrev, onNext }: Prop
   const closeRef = useRef<HTMLButtonElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(false);
+  // если файл ролика недоступен (404, сеть, хостинг) — показываем заглушку
+  // с кадром и ссылкой на оригинал, как у работ без видео
+  const [failed, setFailed] = useState(false);
 
   // блокируем прокрутку страницы и возвращаем фокус после закрытия
   useEffect(() => {
@@ -42,6 +45,10 @@ export function WorkPlayer({ work, index, total, onClose, onPrev, onNext }: Prop
       prevFocus?.focus?.();
     };
   }, []);
+
+  useEffect(() => {
+    setFailed(false);
+  }, [work.id]);
 
   // звук: пробуем включить сразу, если браузер не дал — остаются нативные контролы
   useEffect(() => {
@@ -94,6 +101,7 @@ export function WorkPlayer({ work, index, total, onClose, onPrev, onNext }: Prop
   }, [onClose, onPrev, onNext]);
 
   const hasVideo = Boolean(work.media?.video);
+  const showVideo = hasVideo && !failed;
 
   return (
     <div
@@ -137,7 +145,7 @@ export function WorkPlayer({ work, index, total, onClose, onPrev, onNext }: Prop
         >
           {/* media */}
           <div className="relative bg-black">
-            {hasVideo ? (
+            {showVideo ? (
               <div className="relative flex h-full min-h-[240px] items-center justify-center overflow-hidden sm:min-h-[360px] lg:min-h-[480px]">
                 {work.media!.orientation === "portrait" && (
                   <img
@@ -155,6 +163,7 @@ export function WorkPlayer({ work, index, total, onClose, onPrev, onNext }: Prop
                   controls
                   playsInline
                   preload="metadata"
+                  onError={() => setFailed(true)}
                   className="relative max-h-[72vh] w-full object-contain"
                 />
                 <button
@@ -189,7 +198,9 @@ export function WorkPlayer({ work, index, total, onClose, onPrev, onNext }: Prop
                       className="max-h-[58vh] w-[260px] max-w-[72%] border border-paper/20 object-contain shadow-[0_24px_60px_rgba(0,0,0,.6)]"
                     />
                     <figcaption className="mt-4 font-mono text-[11px] uppercase tracking-[0.18em] text-smoke">
-                      Кадр из ролика · полная версия — в канале
+                      {failed
+                        ? "Видео недоступно — оригинал живёт в канале"
+                        : "Кадр из ролика · полная версия — в канале"}
                     </figcaption>
                   </figure>
                 ) : (

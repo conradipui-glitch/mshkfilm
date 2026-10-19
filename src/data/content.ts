@@ -57,7 +57,8 @@ export const WORKS: Work[] = [
     url: "https://t.me/mushkachev/232",
     accent: "#ff4d00",
     media: {
-      poster: "assets/img/work-232.jpg",
+      video: "assets/video/sebero.mp4",
+      poster: "assets/img/poster-sebero.webp",
       orientation: "portrait",
     },
   },
@@ -76,7 +77,8 @@ export const WORKS: Work[] = [
     url: "https://t.me/mushkachev/233",
     accent: "#ffb000",
     media: {
-      poster: "assets/img/work-233.jpg",
+      video: "assets/video/krc.mp4",
+      poster: "assets/img/poster-krc.webp",
       orientation: "portrait",
     },
   },
@@ -94,7 +96,8 @@ export const WORKS: Work[] = [
     url: "https://t.me/mushkachev/222",
     accent: "#e7dcc4",
     media: {
-      poster: "assets/img/work-222.jpg",
+      video: "assets/video/airplane.mp4",
+      poster: "assets/img/poster-airplane.webp",
       orientation: "portrait",
     },
   },
@@ -113,7 +116,8 @@ export const WORKS: Work[] = [
     url: "https://t.me/mushkachev/219",
     accent: "#ffb000",
     media: {
-      poster: "assets/img/work-219.jpg",
+      video: "assets/video/staff.mp4",
+      poster: "assets/img/poster-staff.webp",
       orientation: "landscape",
     },
   },
@@ -169,7 +173,8 @@ export const WORKS: Work[] = [
     url: "https://t.me/mushkachev/221",
     accent: "#ffb000",
     media: {
-      poster: "assets/img/work-221.jpg",
+      video: "assets/video/primorye.mp4",
+      poster: "assets/img/poster-primorye.webp",
       orientation: "portrait",
     },
   },
@@ -182,7 +187,7 @@ export const WORKS: Work[] = [
     category: "backstage",
     description:
       "Как выглядит съёмка влога для @t_nanikashvili до того, как материал попадёт на канал: два коротких фрагмента с площадки.",
-    duration: "0:07 + 0:06",
+    duration: "0:07 + 0:07",
     date: "3 июня 2025",
     url: "https://t.me/mushkachev/217",
     accent: "#e7dcc4",

@@ -86,9 +86,14 @@ function Thumb({ work, large }: { work: Work; large?: boolean }) {
   );
 }
 
-/** Монитор: играет ролик, если он есть в проекте, иначе показывает обложку. */
+/** Монитор: играет ролик, если он есть в проекте, иначе показывает обложку.
+ *  Если файл недоступен (404, сеть) — молча падаем обратно на обложку. */
 function Monitor({ work }: { work: Work }) {
-  if (!work.media?.video) return <Thumb key={work.id} work={work} large />;
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    setFailed(false);
+  }, [work.id]);
+  if (!work.media?.video || failed) return <Thumb key={work.id} work={work} large />;
   const { video, poster, orientation } = work.media;
   const player = (
     <video
@@ -104,6 +109,7 @@ function Monitor({ work }: { work: Work }) {
       loop
       playsInline
       preload="metadata"
+      onError={() => setFailed(true)}
     />
   );
   if (orientation === "portrait") {
