@@ -3,10 +3,10 @@ import { TG_CONTACT, TG_CHANNEL } from "../data/content";
 import { Reveal } from "./Reveal";
 
 const CREDITS = [
-  ["Главные герои", "вы и ваше событие"],
+  ["Главные герои", "вы и ваша история"],
   ["Камера и монтаж", "Михаил Мушкачев"],
   ["Локация", "Омск и куда позовут"],
-  ["Продюсер", "отсутствует — и это плюс"],
+  ["Команда", "собирается под проект"],
 ];
 
 export function Footer() {
@@ -67,7 +67,7 @@ export function Footer() {
               MSHK<span className="text-signal">.</span>FILM
             </p>
             <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-smoke-dark">
-              © 2026 Михаил Мушкачев · видеограф, Омск
+              © 2026 Михаил Мушкачев · кинематографист, Омск
             </p>
           </div>
 
@@ -103,8 +103,8 @@ export function Footer() {
 
         <p className="mt-10 max-w-2xl font-mono text-[10px] leading-relaxed tracking-wide text-smoke-dark">
           Все работы из каталога опубликованы в открытом Telegram-канале
-          @mushkachev и открываются по ссылкам на оригинал. Видео и кадры на
-          этом сайте взяты из тех же публикаций — чужих материалов здесь нет.
+          @mushkachev. Видео и кадры на этом сайте взяты из тех же публикаций —
+          чужих материалов здесь нет.
         </p>
       </div>
     </footer>

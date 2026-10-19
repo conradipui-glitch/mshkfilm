@@ -79,27 +79,28 @@ export function Hero() {
       <div className="relative z-20 mx-auto flex w-full max-w-[1440px] flex-1 flex-col justify-end px-5 pb-10 pt-32 sm:px-8 lg:px-12">
         <p className="mb-5 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.3em] text-amber-tc">
           <span className="inline-block h-px w-10 bg-signal" aria-hidden="true" />
-          Видеограф · Омск
+          Кинематографист · Омск
           <span className="hidden sm:inline"> · выезды по договорённости</span>
         </p>
 
         <h1 className="font-display font-semibold uppercase leading-[0.98] tracking-[0.01em] text-paper">
           <span className="block text-[11.5vw] sm:text-[9vw] lg:text-[6.8rem] xl:text-[7.6rem]">
-            Снимаю сам.
+            Снимаю кино.
           </span>
           <span className="block text-[11.5vw] text-signal sm:text-[9vw] lg:text-[6.8rem] xl:text-[7.6rem]">
-            Монтирую сам.
+            Из вашей истории.
           </span>
           <span className="block text-[11.5vw] sm:text-[9vw] lg:text-[6.8rem] xl:text-[7.6rem]">
-            Отвечаю лично.
+            Монтирую сам.
           </span>
         </h1>
 
         <div className="mt-8 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <p className="max-w-xl text-base leading-relaxed text-paper/85 sm:text-lg">
-            Меня зовут Михаил Мушкачев. Снимаю мероприятия, видео для бизнеса
-            и контент для блогеров. Вы разговариваете напрямую с человеком за
-            камерой — без менеджеров и испорченного телефона.
+            Меня зовут Михаил Мушкачев. Снимаю постановочные ролики и рекламу:
+            придумываю историю, ставлю свет, монтирую сам. Задача одна — чтобы
+            ваш продукт или вы сами выглядели как фрагмент фильма, а не как
+            отчёт о съёмке.
           </p>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -117,16 +118,16 @@ export function Hero() {
               className="flex items-center gap-2 border border-paper/40 px-6 py-4 font-mono text-xs font-medium uppercase tracking-[0.14em] text-paper backdrop-blur-sm transition-colors hover:border-signal hover:bg-signal hover:text-coal"
             >
               <Send className="h-4 w-4" />
-              Обсудить съёмку
+              Обсудить проект
             </a>
           </div>
         </div>
 
         {/* bottom meta strip */}
         <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-paper/15 pt-5 font-mono text-[10px] uppercase tracking-[0.18em] text-paper/55">
-          <span>Мероприятия</span>
+          <span>Постановочные ролики</span>
           <span className="text-signal" aria-hidden="true">●</span>
-          <span>Видео для бизнеса</span>
+          <span>Реклама и кампейны</span>
           <span className="text-signal" aria-hidden="true">●</span>
           <span>Контент для блогеров</span>
           <span className="text-signal" aria-hidden="true">●</span>

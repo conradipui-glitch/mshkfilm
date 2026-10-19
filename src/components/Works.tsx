@@ -9,15 +9,10 @@ import {
 } from "../data/content";
 import { cn } from "../utils/cn";
 import { Reveal } from "./Reveal";
+import { WorkPlayer } from "./WorkPlayer";
 
 type Filter = WorkCategory | "all";
-const FILTERS: Filter[] = [
-  "all",
-  "business",
-  "bloggers",
-  "creative",
-  "backstage",
-];
+const FILTERS: Filter[] = ["all", "staged", "ad", "mood", "backstage"];
 
 const ROLE_STYLE: Record<Work["roleKind"], string> = {
   solo: "border-signal/60 text-signal",
@@ -77,7 +72,7 @@ function Poster({ work, large }: { work: Work; large?: boolean }) {
   );
 }
 
-/** Обложка: реальный кадр из ролика, если он есть, иначе типографическая карточка. */
+/** Обложка: кадр из ролика, если он есть, иначе типографическая карточка. */
 function Thumb({ work, large }: { work: Work; large?: boolean }) {
   if (!work.media) return <Poster work={work} large={large} />;
   return (
@@ -85,10 +80,7 @@ function Thumb({ work, large }: { work: Work; large?: boolean }) {
       src={work.media.poster}
       alt=""
       loading="lazy"
-      className={cn(
-        "h-full w-full object-cover",
-        large && "animate-poster-in",
-      )}
+      className={cn("h-full w-full object-cover", large && "animate-poster-in")}
       aria-hidden="true"
     />
   );
@@ -133,15 +125,18 @@ function Monitor({ work }: { work: Work }) {
 export function Works() {
   const [filter, setFilter] = useState<Filter>("all");
   const [activeId, setActiveId] = useState<string>(WORKS[0].id);
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   const filtered = useMemo(
-    () =>
-      filter === "all" ? WORKS : WORKS.filter((w) => w.category === filter),
+    () => (filter === "all" ? WORKS : WORKS.filter((w) => w.category === filter)),
     [filter],
   );
 
-  const active =
-    filtered.find((w) => w.id === activeId) ?? filtered[0] ?? WORKS[0];
+  const active = filtered.find((w) => w.id === activeId) ?? filtered[0] ?? WORKS[0];
+  const activeIdx = Math.max(
+    0,
+    filtered.findIndex((w) => w.id === active.id),
+  );
 
   // Монитор следует за списком: активна строка, ближайшая к центру экрана.
   // Наведение мышью временно перехватывает управление.
@@ -150,7 +145,7 @@ export function Works() {
     const onScroll = () => {
       if (Date.now() - hoverLock.current < 1200) return;
       const rows = [
-        ...document.querySelectorAll<HTMLElement>("#works ol li a[data-work]"),
+        ...document.querySelectorAll<HTMLElement>("#works ol li button[data-work]"),
       ];
       if (!rows.length) return;
       const mid = window.innerHeight * 0.45;
@@ -181,12 +176,16 @@ export function Works() {
     };
   }, [filter]);
 
+  const open = openIdx !== null ? filtered[openIdx] : null;
+  const step = (dir: 1 | -1) => {
+    if (openIdx === null) return;
+    const next = (openIdx + dir + filtered.length) % filtered.length;
+    setOpenIdx(next);
+    setActiveId(filtered[next].id);
+  };
+
   return (
-    <section
-      id="works"
-      className="relative bg-coal py-20 sm:py-28"
-      aria-label="Работы"
-    >
+    <section id="works" className="relative bg-coal py-20 sm:py-28" aria-label="Работы">
       <div className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
         {/* section head */}
         <Reveal>
@@ -202,11 +201,10 @@ export function Works() {
               </h2>
             </div>
             <p className="max-w-md text-sm leading-relaxed text-smoke">
-              Все видео опубликованы в открытом Telegram-канале — каждое
-              открывается в один клик. Рядом с работой честно указано, что
-              именно я делал: снял сам, смонтировал или работал в команде.
-              Обложка — настоящий кадр из ролика или типографическая карточка,
-              если кадра под рукой нет.
+              Работы из открытого канала. Ролики играют прямо здесь, на
+              странице — без перехода в Telegram. Остальные открываются
+              карточкой с кадром и описанием. Рядом честно указано, что именно
+              я делал: снял сам, смонтировал или работал в команде.
             </p>
           </div>
         </Reveal>
@@ -214,15 +212,13 @@ export function Works() {
         {/* filters */}
         <Reveal delay={80}>
           <div
-            className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 py-6 sm:mx-0 sm:flex-wrap sm:px-0"
+            className="flex flex-wrap gap-2 py-6"
             role="group"
             aria-label="Фильтр работ по типу"
           >
             {FILTERS.map((f) => {
               const count =
-                f === "all"
-                  ? WORKS.length
-                  : WORKS.filter((w) => w.category === f).length;
+                f === "all" ? WORKS.length : WORKS.filter((w) => w.category === f).length;
               return (
                 <button
                   key={f}
@@ -248,28 +244,38 @@ export function Works() {
           {/* list */}
           <ol className="flex flex-col" key={filter}>
             {filtered.map((work, i) => (
-              <li
-                key={work.id}
-                className="animate-row-in"
-                style={{ animationDelay: `${i * 60}ms` }}
-              >
-                <a
-                  href={work.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+              <li key={work.id} className="animate-row-in" style={{ animationDelay: `${i * 60}ms` }}>
+                <button
+                  type="button"
+                  onClick={() => setOpenIdx(i)}
                   data-work={work.id}
-                  onMouseEnter={() => { hoverLock.current = Date.now(); setActiveId(work.id); }}
-                  onFocus={() => { hoverLock.current = Date.now(); setActiveId(work.id); }}
+                  onMouseEnter={() => {
+                    hoverLock.current = Date.now();
+                    setActiveId(work.id);
+                  }}
+                  onFocus={() => {
+                    hoverLock.current = Date.now();
+                    setActiveId(work.id);
+                  }}
                   className={cn(
-                    "group block border-b border-paper/10 py-6 transition-colors first:border-t sm:py-7",
+                    "group block w-full border-b border-paper/10 py-6 text-left transition-colors first:border-t sm:py-7",
                     active.id === work.id && "border-paper/25",
                   )}
-                  aria-label={`${work.title} — смотреть в Telegram`}
+                  aria-label={`${work.title} — открыть на сайте`}
                 >
-                  {/* mobile poster */}
-                  <div className="mb-5 aspect-[16/9] w-full overflow-hidden lg:hidden">
-                    <Thumb work={work} />
-                  </div>
+                  {/* mobile poster — только там, где есть настоящее видео */}
+                  {work.media?.video && (
+                    <div
+                      className={cn(
+                        "mb-5 w-full overflow-hidden lg:hidden",
+                        work.media.orientation === "portrait"
+                          ? "aspect-[4/5] max-w-[240px]"
+                          : "aspect-video",
+                      )}
+                    >
+                      <Thumb work={work} />
+                    </div>
+                  )}
 
                   <div className="flex items-start gap-4 sm:gap-6">
                     <span
@@ -292,6 +298,14 @@ export function Works() {
                         >
                           {work.title}
                         </h3>
+                        {work.media?.video && (
+                          <span
+                            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-signal text-coal"
+                            title="Ролик играет на сайте"
+                          >
+                            <Play className="ml-0.5 h-3 w-3 fill-current" />
+                          </span>
+                        )}
                         <span
                           className={cn(
                             "border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em]",
@@ -305,11 +319,12 @@ export function Works() {
                         {work.description}
                       </p>
                       <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-[11px] uppercase tracking-wider text-smoke-dark">
+                        {work.partner && <span className="text-amber-tc">{work.partner}</span>}
                         <span>{CATEGORY_LABELS[work.category]}</span>
                         {work.duration && <span>Длительность: {work.duration}</span>}
                         <span>{work.date}</span>
                         <span className="flex items-center gap-1 text-signal opacity-0 transition-opacity group-hover:opacity-100">
-                          Смотреть
+                          {work.media?.video ? "Смотреть" : "Открыть"}
                           <ArrowUpRight className="h-3.5 w-3.5" />
                         </span>
                       </div>
@@ -324,7 +339,7 @@ export function Works() {
                       aria-hidden="true"
                     />
                   </div>
-                </a>
+                </button>
               </li>
             ))}
           </ol>
@@ -351,20 +366,19 @@ export function Works() {
                     Моя роль: {active.role}
                     {active.duration ? ` · ${active.duration}` : ""} · {active.date}
                   </p>
-                  <a
-                    href={active.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-4 flex items-center justify-center gap-2 bg-paper px-4 py-3.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-coal transition-colors hover:bg-signal hover:text-coal"
+                  <button
+                    type="button"
+                    onClick={() => setOpenIdx(activeIdx)}
+                    className="mt-4 flex w-full items-center justify-center gap-2 bg-paper px-4 py-3.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-coal transition-colors hover:bg-signal hover:text-coal"
                   >
                     <Play className="h-4 w-4 fill-current" />
-                    Смотреть видео в Telegram
-                  </a>
+                    {active.media?.video ? "Смотреть здесь" : "Открыть работу"}
+                  </button>
                 </div>
               </div>
               <p className="mt-4 px-1 font-mono text-[10px] leading-relaxed tracking-wide text-smoke-dark">
-                Наведите курсор на строку слева — в мониторе пойдёт сам ролик
-                или его обложка. Клик откроет оригинал в канале.
+                Наведите курсор на строку слева — в мониторе пойдёт ролик или
+                обложка. Клик откроет работу здесь же, не уводя со страницы.
               </p>
             </div>
           </div>
@@ -394,6 +408,17 @@ export function Works() {
           </div>
         </Reveal>
       </div>
+
+      {open && (
+        <WorkPlayer
+          work={open}
+          index={openIdx ?? 0}
+          total={filtered.length}
+          onClose={() => setOpenIdx(null)}
+          onPrev={() => step(-1)}
+          onNext={() => step(1)}
+        />
+      )}
     </section>
   );
 }
